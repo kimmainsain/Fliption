@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { User } from './entities/user.entity';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class UserService {
-  private users = [
+  private users: User[] = [
     {
       userId: 1,
       username: 'admin',
@@ -24,7 +26,8 @@ export class UserService {
     return this.users.find((user) => user.username === username);
   }
 
-  validateUser(username: string, password: string) {
+  validateUser(loginDto: LoginDto) {
+    const { username, password } = loginDto;
     const user = this.findOne(username);
     if (user && user.password === password) return user;
     return null;
