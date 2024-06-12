@@ -15,7 +15,7 @@
 ## JWT
 - [x] JWT 전략 설정 (JwtStrategy)
 - [x] JWT 모듈 설정 (JWT 비밀키 및 만료 시간 설정)
-- [ ] 인증 가드(Authentication Guard) 설정
+- [x] 인증 가드(Authentication Guard) 설정
 ## Test Code
 - [ ] Auth 서비스 테스트 코드 작성
 - [x] Users 서비스 테스트 코드 작성
