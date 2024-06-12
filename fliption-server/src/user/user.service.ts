@@ -26,7 +26,6 @@ export class UserService {
 
   validateUser(username: string, password: string) {
     const user = this.findOne(username);
-    console.log(user, password);
     if (user && user.password === password) return user;
     return null;
   }
