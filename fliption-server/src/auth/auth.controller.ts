@@ -8,8 +8,6 @@ export class AuthController {
 
   @Post('login')
   login(@Body() loginDto: LoginDto) {
-    const user = this.authService.validateUser(loginDto);
-    if (!user) return null;
-    return this.authService.login(user);
+    return this.authService.signIn(loginDto);
   }
 }

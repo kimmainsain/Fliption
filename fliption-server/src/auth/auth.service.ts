@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { LoginDto } from '../user/dto/login.dto';
 
@@ -6,15 +6,12 @@ import { LoginDto } from '../user/dto/login.dto';
 export class AuthService {
   constructor(private userService: UserService) {}
 
-  validateUser(loginDto: LoginDto) {
-    const user = this.userService.validateUser(loginDto);
-    console.log('validateUser : : : ', user);
-    if (!user) return null;
-    return user;
-  }
-
-  login(user: LoginDto) {
-    console.log('login : : : ', user);
-    return user;
+  signIn(loginDto: LoginDto) {
+    const user = this.userService.findOne(loginDto.username);
+    if (user?.password !== loginDto.password) {
+      throw new UnauthorizedException();
+    }
+    const { password, ...result } = user;
+    return result;
   }
 }
