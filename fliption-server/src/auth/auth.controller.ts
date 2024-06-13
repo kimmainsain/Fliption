@@ -17,8 +17,14 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.signIn(loginDto);
+  async login(@Body() loginDto: LoginDto) {
+    return await this.authService.signIn(loginDto);
+  }
+
+  @Public()
+  @Post('refresh')
+  async refresh(@Body() refreshToken: { refreshToken: string }) {
+    return await this.authService.refreshAccessToken(refreshToken.refreshToken);
   }
 
   @UseGuards(AuthGuard)
