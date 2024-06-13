@@ -10,6 +10,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  // 로그인
   async signIn(loginDto: LoginDto): Promise<{ accessToken: string; refreshToken: string }> {
     const user = this.userService.findOne(loginDto.username); // 아이디 검증
     if (!user) throw new UnauthorizedException();
@@ -20,14 +21,22 @@ export class AuthService {
     const payload = { username: user.username, sub: user.userId };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(payload, { expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION });
+
+    await this.userService.saveRefreshToken(user.username, refreshToken);
     return { accessToken, refreshToken };
   }
 
+  // 액세스 토큰 갱신
   async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string }> {
     const payload = this.jwtService.verify(refreshToken, { secret: process.env.JWT_SECRET });
-    console.log("refresh AccessToken : : : : ", payload);
-    // todo
-    // DB에 가지고 있는 refreshToken과 비교하는 코드 추가 예정
-    return { accessToken: "임시 더미데이터" };
+    const user = this.userService.findOne(payload.username);
+    if (!user) throw new UnauthorizedException();
+
+    const isRefreshTokenValid = await this.userService.validateRefreshToken(user.username, refreshToken);
+    if (!isRefreshTokenValid) throw new UnauthorizedException();
+
+    const newPayload = { username: user.username, sub: user.userId };
+    const newAccessToken = this.jwtService.sign(newPayload);
+    return { accessToken: newAccessToken };
   }
 }
