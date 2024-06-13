@@ -22,7 +22,7 @@ export class UserService {
     },
   ];
 
-  findOne(username: string): User | undefined {
+  async findOne(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
   }
 
@@ -37,13 +37,13 @@ export class UserService {
   }
 
   async saveRefreshToken(username: string, refreshToken: string) {
-    const user = this.findOne(username);
+    const user = await this.findOne(username);
     if (!user) return;
     user.refreshToken = refreshToken;
   }
 
   async validateRefreshToken(username: string, refreshToken: string) {
-    const user = this.findOne(username);
+    const user = await this.findOne(username);
     return user?.refreshToken === refreshToken;
   }
 }
