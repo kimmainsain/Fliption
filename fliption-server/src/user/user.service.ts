@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { SALT_OR_ROUNDS } from '../constants/constants';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -9,17 +8,17 @@ export class UserService {
     {
       userId: 1,
       username: 'admin',
-      password: bcrypt.hashSync('admin', SALT_OR_ROUNDS),
+      password: bcrypt.hashSync('admin', parseInt(process.env.SALT_OR_ROUNDS)),
     },
     {
       userId: 2,
       username: 'user',
-      password: bcrypt.hashSync('user', SALT_OR_ROUNDS),
+      password: bcrypt.hashSync('user', parseInt(process.env.SALT_OR_ROUNDS)),
     },
     {
       userId: 3,
       username: 'test',
-      password: bcrypt.hashSync('test', SALT_OR_ROUNDS),
+      password: bcrypt.hashSync('test', parseInt(process.env.SALT_OR_ROUNDS)),
     },
   ];
 

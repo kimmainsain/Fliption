@@ -10,7 +10,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(loginDto: LoginDto): Promise<string> {
+  async signIn(loginDto: LoginDto): Promise<{ access_token : string}> {
     const user = this.userService.findOne(loginDto.username); // 아이디 검증
     if (!user) throw new UnauthorizedException();
 
@@ -18,6 +18,6 @@ export class AuthService {
     if (!validatedUser) throw new UnauthorizedException();
     
     const payload = { username: user.username, sub: user.userId };
-    return this.jwtService.sign(payload);
+    return { access_token: this.jwtService.sign(payload) };
   }
 }

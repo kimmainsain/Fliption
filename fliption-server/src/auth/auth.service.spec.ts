@@ -52,7 +52,7 @@ describe('AuthService', () => {
       username: mockUser.username,
       sub: mockUser.userId,
     });
-    expect(result).toBe('signed-jwt-token');
+    expect(result).toEqual({ access_token: 'signed-jwt-token' });
   });
 
   it('유저를 찾을 수 없을 때 에러 반환 체크', async () => {
