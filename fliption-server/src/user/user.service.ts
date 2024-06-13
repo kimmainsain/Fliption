@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { SALT_OR_ROUNDS } from 'src/constants/constants';
+import { SALT_OR_ROUNDS } from '../constants/constants';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
