@@ -35,4 +35,15 @@ export class UserService {
     const { password, ...result } = user;
     return result;
   }
+
+  async saveRefreshToken(username: string, refreshToken: string) {
+    const user = this.findOne(username);
+    if (!user) return;
+    user.refreshToken = refreshToken;
+  }
+
+  async validateRefreshToken(username: string, refreshToken: string) {
+    const user = this.findOne(username);
+    return user?.refreshToken === refreshToken;
+  }
 }
