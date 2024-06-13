@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { LoginDto } from '../user/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -12,10 +11,12 @@ export class AuthService {
   ) {}
 
   async signIn(loginDto: LoginDto): Promise<string> {
-    const user = this.userService.findOne(loginDto.username);
-    if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
-      throw new UnauthorizedException();
-    }
+    const user = this.userService.findOne(loginDto.username); // 아이디 검증
+    if (!user) throw new UnauthorizedException();
+
+    const validatedUser = await this.userService.validateUser(user, loginDto.password); // 패스워드 검증
+    if (!validatedUser) throw new UnauthorizedException();
+    
     const payload = { username: user.username, sub: user.userId };
     return this.jwtService.sign(payload);
   }

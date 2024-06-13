@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { LoginDto } from './dto/login.dto';
 import { SALT_OR_ROUNDS } from 'src/constants/constants';
 import * as bcrypt from 'bcrypt';
 
@@ -24,15 +23,16 @@ export class UserService {
     },
   ];
 
-  findOne(username: string) {
+  findOne(username: string): User | undefined {
     return this.users.find((user) => user.username === username);
   }
 
-  async validateUser(loginDto: LoginDto) {
-    const user = this.findOne(loginDto.username);
-    if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
-      return null;
-    }
+  async validateUser(user: User, enteredPassword: string) {
+    const isPasswordMatch = await bcrypt.compare(
+      enteredPassword,
+      user.password,
+    );
+    if (!isPasswordMatch) return null;
     const { password, ...result } = user;
     return result;
   }
