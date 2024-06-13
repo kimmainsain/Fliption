@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { LoginDto } from './dto/login.dto';
+import { SALT_OR_ROUNDS } from 'src/constants/constants';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -8,17 +10,17 @@ export class UserService {
     {
       userId: 1,
       username: 'admin',
-      password: 'admin',
+      password: bcrypt.hashSync('admin', SALT_OR_ROUNDS),
     },
     {
       userId: 2,
       username: 'user',
-      password: 'user',
+      password: bcrypt.hashSync('user', SALT_OR_ROUNDS),
     },
     {
       userId: 3,
       username: 'test',
-      password: 'test',
+      password: bcrypt.hashSync('test', SALT_OR_ROUNDS),
     },
   ];
 
@@ -26,9 +28,11 @@ export class UserService {
     return this.users.find((user) => user.username === username);
   }
 
-  validateUser(loginDto: LoginDto) {
+  async validateUser(loginDto: LoginDto) {
     const user = this.findOne(loginDto.username);
-    if (!user || user.password !== loginDto.password) return null;
+    if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
+      return null;
+    }
     const { password, ...result } = user;
     return result;
   }
