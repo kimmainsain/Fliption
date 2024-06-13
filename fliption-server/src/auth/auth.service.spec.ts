@@ -18,6 +18,7 @@ describe('AuthService', () => {
           useValue: {
             findOne: jest.fn(),
             validateUser: jest.fn(),
+            saveRefreshToken: jest.fn(),
           },
         },
         {
@@ -48,11 +49,15 @@ describe('AuthService', () => {
       mockUser,
       loginDto.password,
     );
+    expect(userService.saveRefreshToken).toHaveBeenCalledWith(
+      loginDto.username,
+      'signed-jwt-token',
+    );
     expect(jwtService.sign).toHaveBeenCalledWith({
       username: mockUser.username,
       sub: mockUser.userId,
     });
-    expect(result).toEqual({ accessToken: 'signed-jwt-token' });
+    expect(result).toEqual({ accessToken: 'signed-jwt-token', refreshToken: 'signed-jwt-token' });
   });
 
   it('유저를 찾을 수 없을 때 에러 반환 체크', async () => {
