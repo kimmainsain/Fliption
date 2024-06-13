@@ -12,7 +12,7 @@ export class AuthService {
 
   // 로그인
   async signIn(loginDto: LoginDto): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = this.userService.findOne(loginDto.username); // 아이디 검증
+    const user = await this.userService.findOne(loginDto.username); // 아이디 검증
     if (!user) throw new UnauthorizedException();
 
     const validatedUser = await this.userService.validateUser(user, loginDto.password); // 패스워드 검증
@@ -29,7 +29,7 @@ export class AuthService {
   // 액세스 토큰 갱신
   async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string }> {
     const payload = this.jwtService.verify(refreshToken, { secret: process.env.JWT_SECRET });
-    const user = this.userService.findOne(payload.username);
+    const user = await this.userService.findOne(payload.username);
     if (!user) throw new UnauthorizedException();
 
     const isRefreshTokenValid = await this.userService.validateRefreshToken(user.username, refreshToken);
